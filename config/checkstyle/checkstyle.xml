@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+  <!-- ファイルの最終行が空行であるかチェック -->
+  <module name="NewlineAtEndOfFile"/>
+
+  <!-- 1行あたりの文字数をチェック -->
+  <module name="LineLength">
+    <property name="max" value="130"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!-- インデントをチェック -->
+    <module name="Indentation">
+      <property name="basicOffset" value="4"/>
+    </module>
+
+    <!-- 不要なインポートをチェック -->
+    <module name="UnusedImports"/>
+
+    <!-- メソッドの行数が多すぎないかチェック（※テストメソッド等で超過する場合はチームで値を調整してください） -->
+    <module name="MethodLength">
+      <property name="max" value="30"/>
+    </module>
+
+    <!-- ネストが深すぎないかをチェック -->
+    <module name="NestedIfDepth">
+      <property name="max" value="3"/>
+    </module>
+  </module>
+</module>
