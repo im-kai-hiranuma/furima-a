@@ -20,9 +20,21 @@
       <li><a href="#" class="brand-list">ブランド</a></li>
     </ul>
     <ul class="lists-right">
-      <!-- Spring Securityを導入できたら、ログインの有無で表示が変わるように分岐しましょう -->
-      <li><a href="#" class="login">ログイン</a></li>
-      <li><a href="#" class="sign-up">新規登録</a></li>
+      <!-- ログインしている時の表示 -->
+      <li sec:authorize="isAuthenticated()">
+        <a href="#" class="user-nickname" sec:authentication="principal.user.nickname"></a>
+      </li>
+      <li sec:authorize="isAuthenticated()">
+        <a th:href="@{/users/sign_out}" class="logout">ログアウト</a>
+      </li>
+
+      <!-- ログインしていない時の表示 -->
+      <li sec:authorize="isAnonymous()">
+        <a th:href="@{/users/sign_in}" class="login">ログイン</a>
+      </li>
+      <li sec:authorize="isAnonymous()">
+        <a th:href="@{/users/sign_up}" class="sign-up">新規登録</a>
+      </li>
     </ul>
   </div>
 </header>
