@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ログイン - Furima</title>
+  <link rel="stylesheet" href="/css/application.css">
+  <link rel="stylesheet" href="/css/shared/second_header.css">
+  <link rel="stylesheet" href="/css/shared/second_footer.css">
+  <link rel="stylesheet" href="/css/shared/form.css">
+  <link rel="stylesheet" href="/css/shared/auth.css">
+  <link rel="stylesheet" href="/css/users/sign_in.css">
+</head>
+<body>
+
+<div th:replace="~{shared/header :: second-header}"></div>
+
+<!-- formのactionを設定しましょう。 -->
+<form th:action="@{/users/sign_in}" method="post" class="registration-main">
+  <div class="form-wrap">
+    <div class="form-header">
+      <h1 class="form-header-text">
+        会員情報入力
+      </h1>
+    </div>
+    <div class="login-flash-message" th:if="${param.error}">
+      <p>メールアドレスまたはパスワードが正しくありません</p>
+    </div>
+    <div class="form-group">
+      <div class="form-text-wrap">
+        <label class="form-text">メールアドレス</label>
+        <span class="indispensable">必須</span>
+      </div>
+      <input type="email" name="email" class="input-default" id="email" placeholder="PC・携帯どちらでも可">
+    </div>
+    <div class="form-group">
+      <div class="form-text-wrap">
+        <label class="form-text">パスワード</label>
+        <span class="indispensable">必須</span>
+      </div>
+      <input type="password" name="password" class="input-default" id="password">
+    </div>
+    <div class="login-btn">
+      <button type="submit" class="login-red-btn">ログイン</button>
+    </div>
+  </div>
+</form>
+
+<div th:replace="~{shared/footer :: auth-footer}"></div>
+
+</body>
+</html>
