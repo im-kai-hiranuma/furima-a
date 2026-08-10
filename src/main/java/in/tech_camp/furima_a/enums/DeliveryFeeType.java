@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DeliveryFeeType {
   SELECT(0, "---"),
-  INCLUDED(1, "着払い(購入者負担)"),
-  EXCLUDED(2, "送料込み(出品者負担)");
+  EXCLUDED(1, "着払い(購入者負担)"),
+  INCLUDED(2, "送料込み(出品者負担)");
 
   private final int code;
   private final String label;
