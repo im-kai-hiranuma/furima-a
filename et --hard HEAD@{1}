@@ -1,0 +1,15 @@
+[33m0c5fe86[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m商品出品機能[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/feature/delete[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull origin main: Fast-forward
+[33me740b0f[m HEAD@{1}: reset: moving to HEAD
+[33me740b0f[m HEAD@{2}: pull origin main: Fast-forward
+[33m40e0f4e[m[33m ([m[1;31morigin/商品出品機能[m[33m, [m[1;32mmain[m[33m)[m HEAD@{3}: pull origin main: Fast-forward
+[33mb46e135[m HEAD@{4}: reset: moving to HEAD
+[33mb46e135[m HEAD@{5}: reset: moving to HEAD~
+[33mf27c02d[m HEAD@{6}: pull origin main: Fast-forward
+[33me9f1672[m HEAD@{7}: reset: moving to HEAD
+[33me9f1672[m HEAD@{8}: checkout: moving from main to 商品出品機能
+[33mf27c02d[m HEAD@{9}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mb46e135[m HEAD@{10}: checkout: moving from 商品出品機能 to main
+[33me9f1672[m HEAD@{11}: checkout: moving from main to 商品出品機能
+[33me9f1672[m HEAD@{12}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33m2f98945[m HEAD@{13}: reset: moving to HEAD
+[33m2f98945[m HEAD@{14}: clone: from https://github.com/kaipupupuland678/furima-a.git
