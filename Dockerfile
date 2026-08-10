@@ -1,3 +1,5 @@
+# PR用
+
 # --- 1. ビルド用のステージ ---
 FROM eclipse-temurin:21-jdk-jammy AS builder
 WORKDIR /app-src
