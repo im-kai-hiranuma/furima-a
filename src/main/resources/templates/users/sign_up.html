@@ -18,7 +18,7 @@
   <div th:replace="~{shared/header :: second-header}"></div>
 
   <!-- formのactionとth:objectを設定しましょう。 -->
-  <form action="/users/sign_up" th:object="${userForm}" method="post" class="registration-main">
+  <form th:action="@{/users/sign_up}" th:object="${userForm}" method="post" class="registration-main">
     <div class="form-wrap">
       <div class="form-header">
         <h1 class="form-header-text">会員情報入力</h1>
