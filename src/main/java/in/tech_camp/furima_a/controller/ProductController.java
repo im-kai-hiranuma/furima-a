@@ -15,4 +15,10 @@ public class ProductController {
     this.productService = productService;
   }
 
+  // 商品一覧表示
+  @GetMapping({ "/", "", "items" })
+  public String showAllProduct(Model model) {
+    model.addAttribute("items", productService.allProduct());
+    return "items/index";
+  }
 }
