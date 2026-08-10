@@ -36,7 +36,7 @@ erDiagram
     purchases {
         bigint id PK
         bigint user_id FK "購入者ID"
-        bigint product_id FK_UK "購入商品ID (UNIQUE)"
+        bigint product_id FK "購入商品ID (UNIQUE)"
     }
 
     addresses {
