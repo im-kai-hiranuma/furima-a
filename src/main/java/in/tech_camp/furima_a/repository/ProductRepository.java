@@ -26,7 +26,7 @@ public interface ProductRepository {
       SELECT
         p.id,
         p.name, p.img, p.price, p.delivery_fee, p.description, p.user_id,
-        u.nickname, p.category, p.condition, p.prefecture, p.until_delivery, b.product_id,
+        u.nickname, p.category, p.condition, p.prefecture, p.until_delivery,
         CASE WHEN b.product_id IS NOT NULL THEN 1 ELSE 0 END AS soldout
       FROM products p
       LEFT JOIN users u ON p.user_id = u.id
@@ -34,5 +34,4 @@ public interface ProductRepository {
       WHERE p.id = #{id}
       """)
   ProductDetailQueryResult selectByProductId(Long id);
-  
 }

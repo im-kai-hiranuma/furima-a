@@ -27,11 +27,13 @@ public class ProductController {
   // 商品詳細表示
   @GetMapping("/items/{id}")
   public String showProductDetail(@PathVariable Long id, Model model) {
-
     ProductDetailDto dto = productService.selectByProductId(id);
 
-    model.addAttribute("item", dto);
+    if (dto == null) {
+    return "redirect:/";
+  }
 
+    model.addAttribute("item", dto);
     return "items/show";
   }
 
