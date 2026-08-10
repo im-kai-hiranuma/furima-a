@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<body>
+<div th:fragment="error-messages" th:if="${errorMessages}" class="error-alert">
+  <ul>
+    <li th:each="err : ${errorMessages}" th:text="${err}" class="error-message"></li>
+  </ul>
+</div>
+</body>
+</html>

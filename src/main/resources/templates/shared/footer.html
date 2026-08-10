@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<body>
+<div th:fragment="main-footer">
+  <!-- 下部広告部分 -->
+  <div class="ad-footer-contents">
+    <p class="ad-footer-explain">だれでもかんたん、人生を変えるフリマアプリ</p>
+    <h2 class="ad-footer-title">今すぐ無料ダウンロード！</h2>
+    <div class="store-btn">
+      <a href="#"><img src="/images/app-store.svg" class="apple-btn" alt="App Store"></a>
+      <a href="#"><img src="/images/google-play.png" class="google-btn" alt="Google Play"></a>
+    </div>
+  </div>
+  <!-- /下部広告部分 -->
+
+  <div class="footer">
+    <div class="footer-contents">
+      <div class="furima-details">
+        <h2 class="footer-content-head">FURIMAについて</h2>
+        <ul>
+          <li><a href="#" class="footer-link">会社概要（運営会社）</a></li>
+          <li><a href="#" class="footer-link">プライバシーポリシー</a></li>
+          <li><a href="#" class="footer-link">FURIMA利用規約</a></li>
+          <li><a href="#" class="footer-link">ポイントに関する特約</a></li>
+        </ul>
+      </div>
+      <div class="furima-details">
+        <h2 class="footer-content-head">FURIMAを見る</h2>
+        <ul>
+          <li><a href="#" class="footer-link">カテゴリー一覧</a></li>
+          <li><a href="#" class="footer-link">ブランド一覧</a></li>
+        </ul>
+      </div>
+      <div class="furima-details">
+        <h2 class="footer-content-head">FURIMAについて</h2>
+        <ul>
+          <li><a href="#" class="footer-link">FURIMAガイド</a></li>
+          <li><a href="#" class="footer-link">FURIMAロゴ利用ガイドライン</a></li>
+          <li><a href="#" class="footer-link">お知らせ</a></li>
+        </ul>
+      </div>
+    </div>
+    <a href="#"><img src="/images/furima-logo-white.png" class="logo-white" alt="FURIMA"></a>
+    <p>© FURIMA</p>
+  </div>
+</div>
+
+<footer th:fragment="items-footer" class="items-sell-footer">
+  <ul class="menu">
+    <li><a href="#">プライバシーポリシー</a></li>
+    <li><a href="#">フリマ利用規約</a></li>
+    <li><a href="#">特定商取引に関する表記</a></li>
+  </ul>
+  <a href="/"><img src="/images/furima-logo-color.png" alt="FURIMA" class="second-fotter-logo"></a>
+  <p class="inc">©︎Furima,Inc.</p>
+</footer>
+
+<footer th:fragment="auth-footer" class="second-fotter">
+  <div class="second-fotter-text-wrap">
+    <p class="second-fotter-text">プライバシーポリシー</p>
+    <p class="second-fotter-text">FURIMA利用規約</p>
+    <p class="second-fotter-text">特定商取引に関する表記</p>
+  </div>
+  <img src="/images/furima-logo-color.png" alt="FURIMA" class="second-fotter-logo">
+</footer>
+</body>
+</html>
