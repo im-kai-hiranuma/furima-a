@@ -42,8 +42,9 @@ public class ProductService {
   public ProductDetailDto selectByProductId(Long id) {
 
     ProductDetailQueryResult result = productRepository.selectByProductId(id);
-    if (result == null)
+    if (result == null) {
       return null;
+    }
 
     ProductDetailDto dto = new ProductDetailDto();
     dto.setId(result.getId());
