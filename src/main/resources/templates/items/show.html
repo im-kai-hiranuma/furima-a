@@ -38,7 +38,7 @@
       <!-- ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう -->
       <th:block sec:authorize="isAuthenticated()">
 
-        <th:block th:if="${#authentication.principal.id == item.userId}">
+        <th:block th:if="${#authentication.principal.user.id == item.userId}">
           <a th:href="@{/items/{id}/edit(id=${item.id})}" class="item-red-btn">商品の編集</a>
           <p class="or-text">or</p>
           <form th:action="@{/items/{id}/delete(id=${item.id})}" method="post">
@@ -47,8 +47,8 @@
         </th:block>
 
         <!-- 商品が売れていない場合はこちらを表示しましょう -->
-        <th:block th:if="${#authentication.principal.id != item.userId and !item.soldout}">
-          <a th:href="@{/items/{id}/purchases(id=${item.id})}" class="item-red-btn">購入画面に進む</a>
+        <th:block th:if="${#authentication.principal.user.id != item.userId and !item.soldout}">
+          <a th:href="@{/items/{id}/orders(id=${item.id})}" class="item-red-btn">購入画面に進む</a>
         </th:block>
 
       </th:block>
