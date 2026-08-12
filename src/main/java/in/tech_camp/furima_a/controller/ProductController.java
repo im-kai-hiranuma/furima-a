@@ -76,29 +76,12 @@ public class ProductController {
     }
 
     // --- プルダウン用 Enum 共通データ設定 ---
-
-    @ModelAttribute("categories")
-    public Category[] getCategories() {
-        return Category.values(); 
-    }
-
-    @ModelAttribute("conditions")
-    public Condition[] getConditions() {
-        return Condition.values(); 
-    }
-
-    @ModelAttribute("deliveryFees")
-    public DeliveryFeeType[] getDeliveryFees() {
-        return DeliveryFeeType.values();
-    }
-
-    @ModelAttribute("prefectures")
-    public PrefectureType[] getPrefectures() {
-        return PrefectureType.values();
-    }
-
-    @ModelAttribute("untilDeliveries")
-    public UntilDelivery[] getUntilDeliveries() {
-        return UntilDelivery.values();
+    @ModelAttribute
+    public void addEnumAttributes(Model model) {
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("conditions", Condition.values());
+        model.addAttribute("deliveryFees", DeliveryFeeType.values());
+        model.addAttribute("prefectures", PrefectureType.values());
+        model.addAttribute("untilDeliveries", UntilDelivery.values());
     }
 }
