@@ -13,11 +13,11 @@ import lombok.Data;
 public class ProductForm {
 
     @NotBlank(message = "商品名を入力してください")
-    @Size(max = 40, message = "プロトタイプの名称は40文字以内で入力してください")
+    @Size(max = 40, message = "商品の名称は40文字以内で入力してください")
     private String name;
 
     @NotBlank(message = "商品名を入力してください")
-    @Size(max = 1000, message = "プロトタイプの名称は1000文字以内で入力してください")
+    @Size(max = 1000, message = "商品の名称は1000文字以内で入力してください")
     private String description;
     
     @NotNull(message = "カテゴリーを選択してください")
