@@ -17,6 +17,7 @@ public class SecurityConfig {
         http
             // 開発時：全てのURLへのアクセスを許可
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/items/*/orders").authenticated() //購入ページにアクセスためにログインが必要
                 .anyRequest().permitAll()
             )
 
