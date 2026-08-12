@@ -2,6 +2,7 @@ package in.tech_camp.furima_a.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +18,9 @@ public class SecurityConfig {
         http
             // 開発時：全てのURLへのアクセスを許可
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/items/*/orders").authenticated() //購入ページにアクセスためにログインが必要
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/items/new", "/items/*/orders").authenticated()
+                .requestMatchers(HttpMethod.POST, "/post").authenticated()
                 .anyRequest().permitAll()
             )
 
