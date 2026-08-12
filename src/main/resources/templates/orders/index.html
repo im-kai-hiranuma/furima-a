@@ -5,7 +5,7 @@
   <title>購入手続き - Furima</title>
   <link rel="stylesheet" href="/css/application.css">
   <link rel="stylesheet" href="/css/shared/second_header.css">
-  <link rel="stylesheet" href="/css/shared/footer.css">
+  <link rel="stylesheet" href="/css/shared/second_footer.css">
   <link rel="stylesheet" href="/css/shared/errors.css">
   <link rel="stylesheet" href="/css/shared/form.css">
   <link rel="stylesheet" th:href="@{/css/orders/index.css}">
@@ -160,7 +160,7 @@
   </div>
 </div>
 
-<div th:replace="~{shared/footer :: main-footer}"></div>
+<div th:replace="~{shared/footer :: auth-footer}"></div>
 
 <!-- Controllerから渡された公開鍵をJavaScript変数に代入 -->
 <script th:inline="javascript">

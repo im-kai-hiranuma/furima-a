@@ -18,7 +18,7 @@ public class OrderForm {
 
     //「3桁ハイフン4桁」のフォーマットを指定する
     @NotBlank(message = "郵便番号を入力してください")
-    @Pattern(regexp = "^\\d{3}-\\d{4}$", message = "郵便番号は「3桁ハイフン4桁」の半角文字列のみ保存可能なこと")
+    @Pattern(regexp = "^\\d{3}-\\d{4}$", message = "郵便番号は「3桁ハイフン4桁」の半角文字列を入力してください")
     private String postNumber;
 
     // 都道府県が選択されていることを必須にする
@@ -37,6 +37,6 @@ public class OrderForm {
 
     // ハイフンなし、10桁または11桁の半角数字を指定する
     @NotBlank(message = "電話番号を入力してください")
-    @Pattern(regexp = "^\\d{10,11}$", message = "電話番号は10桁以上11桁以内の半角数値のみ保存可能なこと")
+    @Pattern(regexp = "^\\d{10,11}$", message = "電話番号は10桁以上11桁以内の半角数値を入力してください")
     private String phone;
 }
