@@ -1,5 +1,8 @@
 package in.tech_camp.furima_a.controller;
 
+import java.io.IOException;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +17,7 @@ import in.tech_camp.furima_a.enums.DeliveryFeeType;
 import in.tech_camp.furima_a.enums.PrefectureType;
 import in.tech_camp.furima_a.enums.UntilDelivery;
 import in.tech_camp.furima_a.form.ProductForm;
+import in.tech_camp.furima_a.security.CustomUserDetails; 
 import in.tech_camp.furima_a.service.ProductService;
 
 @Controller
@@ -34,31 +38,41 @@ public class ProductController {
 
     // 出品画面の表示（GET）
     @GetMapping("/items/new")
-    public String showProductForm(Model model) {
+    public String showProductForm(@AuthenticationPrincipal CustomUserDetails currentUser, 
+    Model model) {
+
+    if (currentUser == null) {
+        return "redirect:/users/sign_in";
+    }
+
         model.addAttribute("productForm", new ProductForm());
         return "items/new";
     }
 
     // 出品処理（POST）
-    @PostMapping("/post")
+    @PostMapping("/post") 
     public String createProduct(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @ModelAttribute("productForm") @Validated ProductForm productForm,
             BindingResult bindingResult,
-            Model model) {
+            Model model)throws IOException {
 
+        if (currentUser == null) {
+            return "redirect:/users/sign_in";
+        }
+
+        // 1. バリデーションエラーがある場合は出品画面に戻す
         if (bindingResult.hasErrors()) {
             return "items/new";
         }
-
-        Long testUserId = 1L;
-
+        // 2. 登録処理
         try {
-            productService.createProduct(productForm, testUserId);
-        } catch (Exception e) { 
-            model.addAttribute("errorMessage", "商品の登録に失敗しました。");
+            productService.createProduct(productForm, currentUser.getUser().getId());
+            return "redirect:/";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "画像の保存に失敗しました。");
             return "items/new";
         }
-        return "redirect:/";
     }
 
     // --- プルダウン用 Enum 共通データ設定 ---
