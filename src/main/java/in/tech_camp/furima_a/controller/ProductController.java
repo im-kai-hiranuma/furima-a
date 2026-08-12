@@ -9,8 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import in.tech_camp.furima_a.dto.ProductDetailDto;
 import in.tech_camp.furima_a.enums.Category;
 import in.tech_camp.furima_a.enums.Condition;
 import in.tech_camp.furima_a.enums.DeliveryFeeType;
@@ -83,5 +85,18 @@ public class ProductController {
         model.addAttribute("deliveryFees", DeliveryFeeType.values());
         model.addAttribute("prefectures", PrefectureType.values());
         model.addAttribute("untilDeliveries", UntilDelivery.values());
+    }
+
+    // 商品詳細表示
+    @GetMapping("/items/{id}")
+    public String showProductDetail(@PathVariable Long id, Model model) {
+        ProductDetailDto dto = productService.selectByProductId(id);
+
+        if (dto == null) {
+        return "redirect:/";
+    }
+
+        model.addAttribute("item", dto);
+        return "items/show";
     }
 }
