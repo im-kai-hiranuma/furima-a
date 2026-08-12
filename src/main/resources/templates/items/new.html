@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>商品出品 - Furima</title>
+  <link rel="stylesheet" href="/css/application.css">
+  <link rel="stylesheet" href="/css/shared/errors.css">
+  <link rel="stylesheet" href="/css/shared/form.css">
+  <link rel="stylesheet" href="/css/shared/second_footer.css">
+  <link rel="stylesheet" href="/css/items/new.css">
+</head>
+<body>
+<div class="items-sell-contents">
+  <header class="items-sell-header">
+    <a href="/"><img src="/images/furima-logo-color.png" alt="FURIMA" class="second-logo"></a>
+  </header>
+  <div class="items-sell-main">
+    <h2 class="items-sell-title">商品の情報を入力</h2>
+
+    <form th:action="@{/post}" th:object="${productForm}" method="post" enctype="multipart/form-data">
+      
+      <!-- エラーメッセージの共通表示エリア -->
+      <div th:if="${#fields.hasErrors('*')}" class="error-alert">
+        <ul>
+          <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="error-message"></li>
+        </ul>
+      </div>
+
+      <!-- 出品画像 -->
+      <div class="img-upload">
+        <div class="weight-bold-text">出品画像 <span class="indispensable">必須</span></div>
+        <div class="click-upload">
+          <p>クリックしてファイルをアップロード</p>
+          <input type="file" th:field="*{img}" id="item-image" accept="image/*">
+        </div>
+        <div th:if="${#fields.hasErrors('img')}" th:errors="*{img}" class="error-message"></div>
+        <div id="image-list"></div>
+      </div>
+
+      <!-- 商品名と商品説明 -->
+      <div class="new-items">
+        <div class="weight-bold-text">商品名 <span class="indispensable">必須</span></div>
+        <textarea th:field="*{name}" class="items-text" id="item-name"
+                  placeholder="商品名（必須 40文字まで)" maxlength="40"></textarea>
+        <div class="items-explain">
+          <div class="weight-bold-text">商品の説明 <span class="indispensable">必須</span></div>
+          <textarea th:field="*{description}" class="items-text" id="item-info"
+                    placeholder="商品の説明（必須 1,000文字まで）" rows="7" maxlength="1000"></textarea>
+        </div>
+      </div>
+
+      <!-- 商品の詳細 -->
+      <div class="items-detail">
+        <div class="weight-bold-text">商品の詳細</div>
+        <div class="form">
+          <!-- カテゴリー -->
+          <div class="weight-bold-text">カテゴリー <span class="indispensable">必須</span></div>
+          <select th:field="*{category}" class="select-box" id="item-category">
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.code}"
+                    th:text="${cat.displayName}">
+            </option>
+          </select>
+          <!-- 商品の状態 -->
+          <div class="weight-bold-text">商品の状態 <span class="indispensable">必須</span></div>
+          <select th:field="*{condition}" class="select-box" id="item-sales-status">
+            <option th:each="con : ${conditions}"
+                    th:value="${con.code}"
+                    th:text="${con.displayName}">
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 配送について -->
+      <div class="items-detail">
+        <div class="weight-bold-text">配送について</div>
+        <div class="form">
+          <!-- 配送料の負担 -->
+          <div class="weight-bold-text">配送料の負担 <span class="indispensable">必須</span></div>
+          <select th:field="*{deliveryFee}" class="select-box" id="item-shipping-fee-status">
+            <option th:each="fee : ${deliveryFees}"
+                    th:value="${fee.code}"
+                    th:text="${fee.label}">
+            </option>
+          </select>
+          <!-- 発送元の地域 -->
+          <div class="weight-bold-text">発送元の地域 <span class="indispensable">必須</span></div>
+          <select th:field="*{prefecture}" class="select-box" id="item-prefecture">
+            <option th:each="pref : ${prefectures}"
+                    th:value="${pref.code}"
+                    th:text="${pref.label}">
+            </option>
+          </select>
+          <!-- 発送までの日数 -->
+          <div class="weight-bold-text">発送までの日数 <span class="indispensable">必須</span></div>
+          <select th:field="*{untilDelivery}" class="select-box" id="item-scheduled-delivery">
+            <option th:each="until : ${untilDeliveries}"
+                    th:value="${until.code}"
+                    th:text="${until.displayName}">
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 販売価格 -->
+      <div class="sell-price">
+        <div class="weight-bold-text question-text">
+          <span>販売価格（¥300〜9,999,999）</span>
+        </div>
+        <div>
+          <div class="price-content">
+            <div class="price-text">
+              <span>価格</span>
+              <span class="indispensable">必須</span>
+            </div>
+            <span class="sell-yen">¥</span>
+            <input th:field="*{price}" class="price-input" id="item-price" placeholder="半角数字で入力" type="text">
+          </div>
+          <div class="price-content">
+            <span>販売手数料 (10%)</span>
+            <span>
+              <span id="add-tax-price">0</span>
+              円
+            </span>
+          </div>
+          <div class="price-content">
+            <span>販売利益</span>
+            <span>
+              <span id="profit">0</span>
+              円
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 注意書き -->
+      <div class="caution">
+        <p class="sentence">
+          <a href="#">禁止されている出品・行為</a>を必ずご確認ください。
+        </p>
+      </div>
+
+      <!-- 下部ボタン -->
+      <div class="sell-btn-contents">
+        <button type="submit" class="sell-btn">出品する</button>
+        <a href="/" class="back-btn">もどる</a>
+      </div>
+    </form>
+  </div>
+
+  <div th:replace="~{shared/footer :: items-footer}"></div>
+</div>
+<script src="/js/item_price.js"></script>
+</body>
+</html>

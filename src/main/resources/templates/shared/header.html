@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ja">
+<body>
+<!-- CSS: /css/shared/header.css -->
+<header th:fragment="top-header" class="top-page-header">
+  <div class="search-bar-contents">
+    <a href="/">
+      <img src="/images/furima-logo-color.png" alt="FURIMA" class="furima-icon">
+    </a>
+    <form class="search-form" action="#">
+      <input class="input-box" placeholder="キーワードから探す">
+      <button class="search-button">
+        <img src="/images/search.png" class="search-icon" alt="検索">
+      </button>
+    </form>
+  </div>
+  <div class="nav">
+    <ul class="lists-left">
+      <li><a href="#" class="category-list">カテゴリー</a></li>
+      <li><a href="#" class="brand-list">ブランド</a></li>
+    </ul>
+    <ul class="lists-right">
+      <!-- ログインしている時の表示 -->
+      <li sec:authorize="isAuthenticated()">
+        <a href="#" class="user-nickname" sec:authentication="principal.user.nickname"></a>
+      </li>
+      <li sec:authorize="isAuthenticated()">
+        <a th:href="@{/users/sign_out}" class="logout">ログアウト</a>
+      </li>
+
+      <!-- ログインしていない時の表示 -->
+      <li sec:authorize="isAnonymous()">
+        <a th:href="@{/users/sign_in}" class="login">ログイン</a>
+      </li>
+      <li sec:authorize="isAnonymous()">
+        <a th:href="@{/users/sign_up}" class="sign-up">新規登録</a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<header th:fragment="second-header" class="second-header">
+  <a href="/"><img src="/images/furima-logo-color.png" alt="FURIMA" class="second-logo"></a>
+</header>
+</body>
+</html>

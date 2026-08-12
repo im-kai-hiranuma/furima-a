@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>商品詳細 - Furima</title>
+  <link rel="stylesheet" href="/css/application.css">
+  <link rel="stylesheet" href="/css/shared/header.css">
+  <link rel="stylesheet" href="/css/shared/footer.css">
+  <link rel="stylesheet" href="/css/items/show.css">
+</head>
+<body>
+  <div th:replace="~{shared/header :: top-header}"></div>
+
+  <!-- 商品の概要 -->
+  <div class="item-show">
+    <div class="item-box">
+      <h2 class="name" th:text="${item.name}">
+        商品名
+      </h2>
+      <div class="item-img-content">
+        <img th:src="@{'/uploads/' + ${item.img}}" class="item-box-img" alt="">
+
+        <!-- 商品が売れている場合は、sold outを表示しましょう -->
+        <div class="sold-out" th:if="${item.soldout}">
+          <span>Sold Out!!</span>
+        </div>
+
+      </div>
+      <div class="item-price-box">
+        <span class="item-price" th:text="'¥ ' + ${#numbers.formatInteger(item.price, 1, 'COMMA')}">
+          ¥ 999,999,999
+        </span>
+        <span class="item-postage" th:text="${item.deliveryFee}">
+          配送料負担
+        </span>
+      </div>
+
+      <!-- ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう -->
+      <th:block sec:authorize="isAuthenticated()">
+
+        <th:block th:if="${#authentication.principal.user.id == item.userId}">
+          <a th:href="@{/items/{id}/edit(id=${item.id})}" class="item-red-btn">商品の編集</a>
+          <p class="or-text">or</p>
+          <form th:action="@{/items/{id}/delete(id=${item.id})}" method="post">
+            <button type="submit" class="item-destroy">削除</button>
+          </form>
+        </th:block>
+
+        <!-- 商品が売れていない場合はこちらを表示しましょう -->
+        <th:block th:if="${#authentication.principal.user.id != item.userId and !item.soldout}">
+          <a th:href="@{/items/{id}/orders(id=${item.id})}" class="item-red-btn">購入画面に進む</a>
+        </th:block>
+
+      </th:block>
+
+      <div class="item-explain-box">
+        <span th:text="${item.description}">商品説明</span>
+      </div>
+      <table class="detail-table">
+        <tbody>
+          <tr>
+            <th class="detail-item">出品者</th>
+            <td class="detail-value" th:text="${item.nickname}">出品者名</td>
+          </tr>
+          <tr>
+            <th class="detail-item">カテゴリー</th>
+            <td class="detail-value" th:text="${item.category}">カテゴリー名</td>
+          </tr>
+          <tr>
+            <th class="detail-item">商品の状態</th>
+            <td class="detail-value" th:text="${item.condition}">商品の状態</td>
+          </tr>
+          <tr>
+            <th class="detail-item">配送料の負担</th>
+            <td class="detail-value" th:text="${item.deliveryFee}">発送料の負担</td>
+          </tr>
+          <tr>
+            <th class="detail-item">発送元の地域</th>
+            <td class="detail-value" th:text="${item.prefecture}">発送元の地域</td>
+          </tr>
+          <tr>
+            <th class="detail-item">発送日の目安</th>
+            <td class="detail-value" th:text="${item.untilDelivery}">発送日の目安</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="option">
+        <div class="favorite-btn">
+          <img src="/images/star.png" class="favorite-star-icon" width="20" height="20" alt="">
+          <span>お気に入り 0</span>
+        </div>
+        <div class="report-btn">
+          <img src="/images/flag.png" class="report-flag-icon" width="20" height="20" alt="">
+          <span>不適切な商品の通報</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /商品の概要 -->
+
+  <div class="comment-box">
+    <form>
+      <textarea class="comment-text"></textarea>
+      <p class="comment-warn">
+        相手のことを考え丁寧なコメントを心がけましょう。
+        <br>
+        不快な言葉遣いなどは利用制限や退会処分となることがあります。
+      </p>
+      <button type="submit" class="comment-btn">
+        <img src="/images/comment.png" class="comment-flag-icon" width="20" height="25" alt="">
+        <span>コメントする</span>
+      </button>
+    </form>
+  </div>
+  <div class="links">
+    <a href="#" class="change-item-btn">＜ 前の商品</a>
+    <a href="#" class="change-item-btn">後ろの商品 ＞</a>
+  </div>
+  <!-- 詳細ページで表示されている商品のカテゴリー名を表示しましょう -->
+  <a href="#" class="another-item" th:text="${item.category} + 'をもっと見る'">商品のカテゴリー名をもっと見る</a>
+
+  <div th:replace="~{shared/footer :: main-footer}"></div>
+</body>
+</html>
