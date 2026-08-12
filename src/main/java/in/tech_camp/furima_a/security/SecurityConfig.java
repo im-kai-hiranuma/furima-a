@@ -19,7 +19,7 @@ public class SecurityConfig {
             // 開発時：全てのURLへのアクセスを許可
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/items/new").authenticated()
+                .requestMatchers("/items/new", "/items/*/orders").authenticated()
                 .requestMatchers(HttpMethod.POST, "/post").authenticated()
                 .anyRequest().permitAll()
             )
