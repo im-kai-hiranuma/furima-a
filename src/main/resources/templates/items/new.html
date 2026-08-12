@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="/css/application.css">
   <link rel="stylesheet" href="/css/shared/errors.css">
   <link rel="stylesheet" href="/css/shared/form.css">
-  <link rel="stylesheet" href="/css/shared/second-fotter.css">
+  <link rel="stylesheet" href="/css/shared/second_footer.css">
   <link rel="stylesheet" href="/css/items/new.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
       <!-- エラーメッセージの共通表示エリア -->
       <div th:if="${#fields.hasErrors('*')}" class="error-alert">
         <ul>
-          <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+          <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="error-message"></li>
         </ul>
       </div>
 
@@ -115,15 +115,21 @@
               <span class="indispensable">必須</span>
             </div>
             <span class="sell-yen">¥</span>
-            <input th:field="*{price}" type="number" class="price-input" id="item-price" placeholder="例）300">
+            <input th:field="*{price}" class="price-input" id="item-price" placeholder="半角数字で入力" type="text">
           </div>
           <div class="price-content">
             <span>販売手数料 (10%)</span>
-            <span><span id="add-tax-price"></span>円</span>
+            <span>
+              <span id="add-tax-price">0</span>
+              円
+            </span>
           </div>
           <div class="price-content">
             <span>販売利益</span>
-            <span><span id="profit"></span>円</span>
+            <span>
+              <span id="profit">0</span>
+              円
+            </span>
           </div>
         </div>
       </div>
