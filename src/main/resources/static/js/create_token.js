@@ -12,7 +12,7 @@ const pay = () => {
   form.addEventListener("submit", (e) => {
     payjp.createToken(numberElement).then(function (response) {
       if (response.error) {
-        alert("カード情報の入力に誤りがあります。確認してください。");
+        document.getElementById("charge-form").submit();
         return;
       }
       const token = response.id;

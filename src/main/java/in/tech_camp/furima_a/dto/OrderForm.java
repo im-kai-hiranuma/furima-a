@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class OrderForm {
 
-    @NotBlank(message = "クレジットカード情報を入力してください")
+    @NotBlank(message = "クレジットカード情報を正しく入力してください")
     private String token;
 
     //「3桁ハイフン4桁」のフォーマットを指定する
