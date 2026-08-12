@@ -4,9 +4,9 @@ import in.tech_camp.furima_a.dto.OrderForm;
 import in.tech_camp.furima_a.enums.PrefectureType;
 import in.tech_camp.furima_a.repository.OrderRepository;
 import in.tech_camp.furima_a.service.OrderService;
-import in.tech_camp.furima_a.dto.repository.ProductQueryResult; 
+import in.tech_camp.furima_a.dto.repository.ProductDetailQueryResult;
 import in.tech_camp.furima_a.repository.ProductRepository; 
-import in.tech_camp.furima_a.entity.User;
+import in.tech_camp.furima_a.entity.UserEntity;
 import in.tech_camp.furima_a.repository.UserRepository; 
 
 import jakarta.validation.Valid;
@@ -37,8 +37,8 @@ public class OrderController {
                         Model model,
                         @AuthenticationPrincipal UserDetails userDetails) {
         
-        ProductQueryResult product = productRepository.findById(productId);
-        User currentUser = userRepository.findByEmail(userDetails.getUsername());
+        ProductDetailQueryResult product = productRepository.selectByProductId(productId);
+        UserEntity currentUser = userRepository.findByEmail(userDetails.getUsername());
 
         // 悪意のあるユーザーがURLを直接入力してアクセスしてきた場合を防ぐ
         // 商品が存在しない、既に売り切れている、またはアクセス者が自身の出品した商品の場合はトップへリダイレクト
@@ -61,8 +61,8 @@ public class OrderController {
                          Model model,
                          @AuthenticationPrincipal UserDetails userDetails) {
 
-        ProductQueryResult product = productRepository.findById(productId);
-        User currentUser = userRepository.findByEmail(userDetails.getUsername());
+        ProductDetailQueryResult product = productRepository.selectByProductId(productId);
+        UserEntity currentUser = userRepository.findByEmail(userDetails.getUsername());
 
         // 外部ツール（Postmanなど）を使ってPOSTリクエストを直接送信された場合に対する防御
         if (product == null || orderRepository.isSoldOut(productId) || currentUser.getId().equals(product.getUserId())) {
