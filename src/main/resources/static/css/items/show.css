@@ -144,7 +144,7 @@
 .comment-box {
   width: 40vw;
   background-color: #fff;
-  margin: 5vh 0;
+  margin: 5vh auto;
   text-align: center;
 }
 
@@ -188,6 +188,7 @@
   display: flex;
   justify-content: space-between;
   width: 50vw;
+  margin: 0 auto;
 }
 
 .change-item-btn {
@@ -198,9 +199,10 @@
 
 .another-item {
   display: block;
-  margin: 30px 0px 8px;
+  margin: 30px auto 8px;
   color: #3CCACE;
   text-decoration: none;
   font-weight: bold;
   font-size: 23px;
+  text-align: center;
 }
