@@ -1,7 +1,10 @@
 package in.tech_camp.furima_a.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import in.tech_camp.furima_a.dto.ProductDetailDto;
+import in.tech_camp.furima_a.entity.ProductEntity;
 import in.tech_camp.furima_a.enums.Category;
 import in.tech_camp.furima_a.enums.Condition;
 import in.tech_camp.furima_a.enums.DeliveryFeeType;
@@ -99,6 +103,7 @@ public class ProductController {
         model.addAttribute("item", dto);
         return "items/show";
     }
+
   // 商品削除機能
   @PostMapping("/items/{id}/delete")
   public String deleteProduct(
@@ -112,4 +117,58 @@ public class ProductController {
     return "redirect:/";
   }
 
+  //商品編集
+    @GetMapping("/items/{id}/edit")
+    public String showEditForm(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+    ProductDetailDto dto = productService.selectByProductId(id);
+
+    if (currentUser == null) {
+        return "redirect:/users/sign_in";
+    }
+
+    if (dto == null || !dto.getUserId().equals(currentUser.getUser().getId())) {
+        return "redirect:/";
+    }
+
+    ProductForm form = new ProductForm();
+    form.setName(dto.getName());
+    form.setDescription(dto.getDescription());
+
+    model.addAttribute("productForm", form);
+    model.addAttribute("item", dto);
+    return "items/edit";
+    }
+    
+    @PostMapping("/items/{id}/update")
+    public String updateProduct(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @ModelAttribute("productForm") @Validated ProductForm productForm,
+            BindingResult bindingResult,
+            Model model) {
+
+        if (currentUser == null) {
+            return "redirect:/users/sign_in";
+        }
+
+        if (bindingResult.hasErrors()) {
+            ProductDetailDto dto = productService.selectByProductId(id);
+            model.addAttribute("item", dto);
+            return "items/edit";
+        }
+
+        try {
+            productService.updateProduct(id, productForm, currentUser.getUser().getId());
+        } catch (SecurityException e) {
+            return "redirect:/";
+        } catch (IllegalStateException e) {
+            return "redirect:/";
+        } catch (IOException e) {
+            bindingResult.reject("error.image.upload", "画像の保存に失敗しました。");
+            ProductDetailDto dto = productService.selectByProductId(id);
+            model.addAttribute("item", dto);
+            return "items/edit";
+        }
+    }
 }
+

@@ -109,4 +109,39 @@ public class ProductService {
     productRepository.deleteById(id);
   }
 
+  //商品編集
+  @Transactional
+  public ProductEntity updateProduct(Long id, ProductForm form, Long currentUserId) throws IOException {
+    ProductDetailQueryResult product = productRepository.selectByProductId(id);
+
+    if (product == null) {
+      return null;
+    }
+
+    if (!product.getUserId().equals(currentUserId) || product.isSoldout()) {
+      return null;
+    }
+
+    // 画像の保存
+    String savedFileName = storageService.storeFile(form.getImg());
+
+    // エンティティの作成（Form から Entity へのデータ移送）
+    ProductEntity updatedProduct = new ProductEntity();
+    updatedProduct.setId(id);
+    updatedProduct.setUserId(currentUserId);
+    updatedProduct.setName(form.getName());
+    updatedProduct.setDescription(form.getDescription());
+    updatedProduct.setCategory(form.getCategory());
+    updatedProduct.setCondition(form.getCondition());
+    updatedProduct.setDeliveryFee(form.getDeliveryFee());
+    updatedProduct.setPrefecture(form.getPrefecture());
+    updatedProduct.setUntilDelivery(form.getUntilDelivery());
+    updatedProduct.setPrice(form.getPrice());
+    updatedProduct.setImg(savedFileName);
+
+    // DB更新
+    productRepository.update(updatedProduct);
+    return updatedProduct;
+  }
+
 }

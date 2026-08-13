@@ -2,10 +2,11 @@ package in.tech_camp.furima_a.repository;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import in.tech_camp.furima_a.dto.repository.ProductDetailQueryResult;
 import in.tech_camp.furima_a.dto.repository.ProductQueryResult;
@@ -29,6 +30,14 @@ public interface ProductRepository {
       VALUES (#{userId}, #{name}, #{description}, #{category}, #{condition}, #{deliveryFee}, #{prefecture}, #{untilDelivery}, #{price}, #{img})
       """)
   void insert(ProductEntity product);
+
+  @Update("""
+      UPDATE products
+      SET name = #{name}, description = #{description}, category = #{category}, condition = #{condition}, delivery_fee = #{deliveryFee}, prefecture = #{prefecture}, until_delivery = #{untilDelivery}, price = #{price}, img = #{img}
+      WHERE id = #{id}
+      """)
+  void update(ProductEntity product);
+
   // 商品詳細表示
   @Select("""
       SELECT
