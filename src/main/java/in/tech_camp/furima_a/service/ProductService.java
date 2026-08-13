@@ -93,4 +93,20 @@ public class ProductService {
 
     return dto;
   }
+
+  // 商品削除機能
+  public void deleteProduct(Long id, Long currentUserId) {
+    ProductDetailQueryResult product = productRepository.selectByProductId(id);
+    
+    if (product == null) {
+      return;
+    }
+
+    if (!product.getUserId().equals(currentUserId) || product.isSoldout()) {
+      return;
+    }
+
+    productRepository.deleteById(id);
+  }
+
 }
