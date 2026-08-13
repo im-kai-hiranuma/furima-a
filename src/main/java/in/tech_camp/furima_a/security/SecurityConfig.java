@@ -3,16 +3,23 @@ package in.tech_camp.furima_a.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final PortfolioBasicAuthFilter basicAuthFilter;
+
+    // 門番（Filter）を注入
+    public SecurityConfig(PortfolioBasicAuthFilter basicAuthFilter) {
+        this.basicAuthFilter = basicAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -20,7 +27,7 @@ public class SecurityConfig {
             // 開発時：全てのURLへのアクセスを許可
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/", "/items/*", "/users/sign_in", "/users/sign_up").permitAll()
+                .requestMatchers("/", "/items/**", "/users/sign_in", "/users/sign_up").permitAll()
                 .requestMatchers("/items/new", "/items/*/orders").authenticated()
                 .requestMatchers(HttpMethod.POST, "/post").authenticated()
                // .anyRequest().permitAll()
@@ -28,8 +35,9 @@ public class SecurityConfig {
             .anyRequest().authenticated()
             )
             // Basic認証を有効にする
-            .httpBasic(Customizer.withDefaults())
+            // .httpBasic(Customizer.withDefaults())
 
+            .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
             .formLogin(login -> login
                 .loginPage("/users/sign_in")            // ログイン画面のURL（GET）
