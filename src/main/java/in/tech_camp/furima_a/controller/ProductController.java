@@ -99,4 +99,17 @@ public class ProductController {
         model.addAttribute("item", dto);
         return "items/show";
     }
+  // 商品削除機能
+  @PostMapping("/items/{id}/delete")
+  public String deleteProduct(
+      @PathVariable Long id, 
+      @AuthenticationPrincipal CustomUserDetails currentUser
+  ) {
+    if (currentUser != null) {
+      productService.deleteProduct(id, currentUser.getUser().getId());
+    }
+
+    return "redirect:/";
+  }
+
 }

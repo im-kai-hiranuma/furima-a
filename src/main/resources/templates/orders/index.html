@@ -22,7 +22,7 @@
     <!-- 購入内容の表示 -->
     <div class="buy-item-info">
       <!-- 商品画像を表示 -->
-      <img th:src="@{'/images/uploads/' + ${product.img}}" class="buy-item-img" alt="商品画像">
+      <img th:src="@{'/uploads/' + ${product.img}}" class="buy-item-img" alt="商品画像">
       <div class="buy-item-right-content">
         <!-- 商品名を表示 -->
         <h2 class="buy-item-text" th:text="${product.name}">商品名</h2>
