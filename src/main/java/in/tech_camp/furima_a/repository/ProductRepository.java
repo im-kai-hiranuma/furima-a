@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import in.tech_camp.furima_a.dto.repository.ProductDetailQueryResult;
+import in.tech_camp.furima_a.dto.repository.ProductEditForm;
 import in.tech_camp.furima_a.dto.repository.ProductQueryResult;
 import in.tech_camp.furima_a.entity.ProductEntity;
 
@@ -31,12 +32,19 @@ public interface ProductRepository {
       """)
   void insert(ProductEntity product);
 
+  // 出品者どうかを判別
+  @Select("SELECT COUNT(*) > 0 FROM products WHERE id = #{id} AND user_id = #{userId} ")
+  boolean existsByIdANDUserId(Long id,Long userId);
+
+  // 更新
   @Update("""
       UPDATE products
-      SET name = #{name}, description = #{description}, category = #{category}, condition = #{condition}, delivery_fee = #{deliveryFee}, prefecture = #{prefecture}, until_delivery = #{untilDelivery}, price = #{price}, img = #{img}
+      SET img = #{img},name = #{name},description = #{description},
+      category = #{category},condition = #{condition},delivery_fee = #{deliveryFee},
+      prefecture = #{prefecture},until_delivery = #{untilDelivery},price = #{price}
       WHERE id = #{id}
       """)
-  void update(ProductEntity product);
+  int updateByProductId(ProductEditForm productEditForm);
 
   // 商品詳細表示
   @Select("""

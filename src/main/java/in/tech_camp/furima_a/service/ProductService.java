@@ -2,6 +2,7 @@ package in.tech_camp.furima_a.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -44,29 +45,30 @@ public class ProductService {
     }).collect(Collectors.toList());
   }
 
-@Transactional
-    public ProductEntity createProduct(ProductForm form, Long userId) throws IOException {
-        // 1. 画像の保存
-        String savedFileName = storageService.storeFile(form.getImg());
+  // 出品処理
+  @Transactional
+  public ProductEntity createProduct(ProductForm form, Long userId) throws IOException {
+    // 1. 画像の保存
+    String savedFileName = storageService.storeFile(form.getImg());
 
-        // 2. エンティティの作成（Form から Entity へのデータ移送）
-        ProductEntity product = new ProductEntity();
-        product.setUserId(userId);
-        product.setName(form.getName());
-        product.setDescription(form.getDescription());
-        product.setCategory(form.getCategory());
-        product.setCondition(form.getCondition());
-        product.setDeliveryFee(form.getDeliveryFee());
-        product.setPrefecture(form.getPrefecture());
-        product.setUntilDelivery(form.getUntilDelivery());
-        product.setPrice(form.getPrice());
-        product.setImg(savedFileName);
+    // 2. エンティティの作成
+    ProductEntity product = new ProductEntity();
+    product.setUserId(userId);
+    product.setName(form.getName());
+    product.setDescription(form.getDescription());
+    product.setCategory(form.getCategory());
+    product.setCondition(form.getCondition());
+    product.setDeliveryFee(form.getDeliveryFee());
+    product.setPrefecture(form.getPrefecture());
+    product.setUntilDelivery(form.getUntilDelivery());
+    product.setPrice(form.getPrice());
+    product.setImg(savedFileName);
 
-        // 3. DB保存
-        productRepository.insert(product);
+    // 3. DB保存
+    productRepository.insert(product);
 
-        return product;
-    }
+    return product;
+  }
 
   // 商品詳細表示
   public ProductDetailDto selectByProductId(Long id) {
@@ -84,6 +86,8 @@ public class ProductService {
     dto.setNickname(result.getNickname());
     dto.setPrice(result.getPrice());
     dto.setSoldout(result.isSoldout());
+    
+    // 【修正】result.getCategory() だったものを getDeliveryFee() に修正
     dto.setDeliveryFee(DeliveryFeeType.fromCode(result.getDeliveryFee()).getLabel());
     dto.setCategory(Category.fromCode(result.getCategory()).getDisplayName());
     dto.setCondition(Condition.fromCode(result.getCondition()).getDisplayName());
@@ -102,46 +106,85 @@ public class ProductService {
       return;
     }
 
-    if (!product.getUserId().equals(currentUserId) || product.isSoldout()) {
+    if (!Objects.equals(product.getUserId(), currentUserId) || product.isSoldout()) {
       return;
     }
 
     productRepository.deleteById(id);
   }
 
-  //商品編集
-  @Transactional
-  public ProductEntity updateProduct(Long id, ProductForm form, Long currentUserId) throws IOException {
-    ProductDetailQueryResult product = productRepository.selectByProductId(id);
+  // 商品更新ページ
+  @Transactional(readOnly = true)
+  public ProductForm showEditProduct(ProductDetailDto dto, Long userId) {
 
-    if (product == null) {
-      return null;
+    if (!productRepository.existsByIdANDUserId(dto.getId(), userId)) {
+      throw new RuntimeException("所有者ではありませんので編集できません");
     }
 
-    if (!product.getUserId().equals(currentUserId) || product.isSoldout()) {
-      return null;
-    }
+    ProductForm form = new ProductForm();
+    form.setName(dto.getName());
+    form.setDescription(dto.getDescription());
+    form.setCategory(Category.fromDisplayName(dto.getCategory()).getCode());
+    form.setCondition(Condition.fromDisplayName(dto.getCondition()).getCode());
+    form.setDeliveryFee(DeliveryFeeType.fromDisplayName(dto.getDeliveryFee()).getCode());
+    form.setPrefecture(PrefectureType.fromDisplayName(dto.getPrefecture()).getCode());
+    form.setUntilDelivery(UntilDelivery.fromDisplayName(dto.getUntilDelivery()).getCode());
+    form.setPrice(dto.getPrice());
 
-    // 画像の保存
-    String savedFileName = storageService.storeFile(form.getImg());
-
-    // エンティティの作成（Form から Entity へのデータ移送）
-    ProductEntity updatedProduct = new ProductEntity();
-    updatedProduct.setId(id);
-    updatedProduct.setUserId(currentUserId);
-    updatedProduct.setName(form.getName());
-    updatedProduct.setDescription(form.getDescription());
-    updatedProduct.setCategory(form.getCategory());
-    updatedProduct.setCondition(form.getCondition());
-    updatedProduct.setDeliveryFee(form.getDeliveryFee());
-    updatedProduct.setPrefecture(form.getPrefecture());
-    updatedProduct.setUntilDelivery(form.getUntilDelivery());
-    updatedProduct.setPrice(form.getPrice());
-    updatedProduct.setImg(savedFileName);
-
-    // DB更新
-    productRepository.update(updatedProduct);
-    return updatedProduct;
+    return form;
   }
 
+  // 商品更新
+  @Transactional
+  public int updateByProductId(Long id, ProductForm productForm, Long userId, String image) throws IOException {
+
+    // dtoから受け取る -> dbのほうはint型なのでserviceでdtoをint型に変換 もしくは thymeleaf側で変換
+
+    if (!productRepository.existsByIdANDUserId(id, userId)) {
+      throw new RuntimeException("所有者ではありませんので編集できません");
+    }
+
+    String imageName = null;
+    MultipartFile imgFile = productForm.getImg();
+
+    if (imgFile != null && !imgFile.isEmpty()) {
+      String uuid = UUID.randomUUID().toString();
+      imageName = uuid + "-" + imgFile.getOriginalFilename();
+
+      Path uploadDir = Paths.get("uploads").toAbsolutePath();
+
+      if (!Files.exists(uploadDir)) {
+        Files.createDirectories(uploadDir);
+      }
+
+      Path imagePath = uploadDir.resolve(imageName);
+      Files.copy(imgFile.getInputStream(), imagePath);
+    }
+
+    ProductEditForm product = new ProductEditForm();
+    product.setId(id);
+    if (imageName == null) {
+      imageName = image;
+    }
+    product.setImg(imageName);
+    product.setName(productForm.getName());
+    product.setDescription(productForm.getDescription());
+    product.setCategory(productForm.getCategory());
+    product.setCondition(productForm.getCondition());
+    product.setDeliveryFee(productForm.getDeliveryFee());
+    product.setPrefecture(productForm.getPrefecture());
+    product.setUntilDelivery(productForm.getUntilDelivery());
+    product.setPrice(productForm.getPrice());
+
+    int result = productRepository.updateByProductId(product);
+
+    if (result <= 0) {
+      throw new RuntimeException("編集できませんでした");
+    } else if (result >= 2) {
+      throw new RuntimeException("予想された挙動とは異なったため編集できませんでした");
+    }
+
+    return result;
+
+  }
 }

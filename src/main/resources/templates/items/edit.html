@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>商品編集 - Furima</title>
-  <!-- cssは商品出品のものを併用しています: /css/items/new.css -->
   <link rel="stylesheet" href="/css/application.css">
   <link rel="stylesheet" href="/css/shared/errors.css">
   <link rel="stylesheet" href="/css/shared/form.css">
@@ -17,21 +16,29 @@
   <div class="items-sell-main">
     <h2 class="items-sell-title">商品の情報を編集</h2>
 
-    <!-- formのactionとth:objectを設定しましょう。 -->
+    <!-- th:action に修正し、URLパラメータとして item.id を渡す -->
     <form th:action="@{/items/{id}/update(id=${item.id})}" th:object="${productForm}" method="post" enctype="multipart/form-data">
-      <!-- エラーメッセージを表示できるようにしましょう。 -->
-      <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+      
+      <!-- エラーメッセージ -->
+      <div th:if="${#fields.hasErrors('*')}" class="error-alert">
         <ul>
-          <li th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li>
+          <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="error-message"></li>
         </ul>
       </div>
 
       <!-- 出品画像 -->
       <div class="img-upload">
         <div class="weight-bold-text">出品画像 <span class="indispensable">必須</span></div>
+        
+        <!-- 現在の画像を表示 -->
+        <div th:if="${item.img != null}" class="current-image" style="margin-bottom: 10px;">
+          <p style="font-size: 12px; color: #888;">現在の画像：</p>
+          <img th:src="@{'/uploads/' + ${item.img}}" alt="現在の画像" style="max-width: 150px; height: auto;">
+        </div>
+
         <div class="click-upload">
-          <p>クリックしてファイルをアップロード</p>
-          <input type="file" name="img" id="item-image" multiple accept="image/*">
+          <p>変更する場合のみファイルを選択してください</p>
+          <input type="file" name="img" id="item-image" accept="image/*">
         </div>
         <div id="image-list"></div>
       </div>
@@ -46,52 +53,52 @@
         </div>
       </div>
 
-    <!-- 商品の詳細 -->
-    <div class="items-detail">
-      <div class="weight-bold-text">商品の詳細</div>
-      <div class="form">
-        <div class="weight-bold-text">カテゴリー <span class="indispensable">必須</span></div>
-        <select th:field="*{category}" class="select-box">
-          <option th:each="cat : ${categories}"
-                  th:value="${cat.code}"
-                  th:text="${cat.displayName}"></option>
-        </select>
+      <!-- 商品の詳細 -->
+      <div class="items-detail">
+        <div class="weight-bold-text">商品の詳細</div>
+        <div class="form">
+          <div class="weight-bold-text">カテゴリー <span class="indispensable">必須</span></div>
+          <select th:field="*{category}" class="select-box" >
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.code}"
+                    th:text="${cat.displayName}"></option>
+          </select>
 
-        <div class="weight-bold-text">商品の状態 <span class="indispensable">必須</span></div>
-        <select th:field="*{condition}" class="select-box">
-          <option th:each="con : ${conditions}"
-                  th:value="${con.code}"
-                  th:text="${con.displayName}"></option>
-        </select>
+          <div class="weight-bold-text">商品の状態 <span class="indispensable">必須</span></div>
+          <select th:field="*{condition}" class="select-box" >
+            <option th:each="con : ${conditions}"
+                    th:value="${con.code}"
+                    th:text="${con.displayName}"></option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <!-- 配送について -->
-    <div class="items-detail">
-      <div class="weight-bold-text">配送について</div>
-      <div class="form">
-        <div class="weight-bold-text">配送料の負担 <span class="indispensable">必須</span></div>
-        <select th:field="*{deliveryFee}" class="select-box">
-          <option th:each="fee : ${deliveryFees}"
-                  th:value="${fee.code}"
-                  th:text="${fee.label}"></option>
-        </select>
+      <!-- 配送について -->
+      <div class="items-detail">
+        <div class="weight-bold-text">配送について</div>
+        <div class="form">
+          <div class="weight-bold-text">配送料の負担 <span class="indispensable">必須</span></div>
+          <select th:field="*{deliveryFee}" class="select-box">
+            <option th:each="fee : ${deliveryFees}"
+                    th:value="${fee.code}"
+                    th:text="${fee.label}"></option>
+          </select>
 
-        <div class="weight-bold-text">発送元の地域 <span class="indispensable">必須</span></div>
-        <select th:field="*{prefecture}" class="select-box">
-          <option th:each="pref : ${prefectures}"
-                  th:value="${pref.code}"
-                  th:text="${pref.label}"></option>
-        </select>
+          <div class="weight-bold-text">発送元の地域 <span class="indispensable">必須</span></div>
+          <select th:field="*{prefecture}" class="select-box">
+            <option th:each="pref : ${prefectures}"
+                    th:value="${pref.code}"
+                    th:text="${pref.label}"></option>
+          </select>
 
-        <div class="weight-bold-text">発送までの日数 <span class="indispensable">必須</span></div>
-        <select th:field="*{untilDelivery}" class="select-box">
-          <option th:each="until : ${untilDeliveries}"
-                  th:value="${until.code}"
-                  th:text="${until.displayName}"></option>
-        </select>
+          <div class="weight-bold-text">発送までの日数 <span class="indispensable">必須</span></div>
+          <select th:field="*{untilDelivery}" class="select-box">
+            <option th:each="until : ${untilDeliveries}"
+                    th:value="${until.code}"
+                    th:text="${until.displayName}"></option>
+          </select>
+        </div>
       </div>
-    </div>
 
       <!-- 販売価格 -->
       <div class="sell-price">
@@ -105,22 +112,22 @@
               <span class="indispensable">必須</span>
             </div>
             <span class="sell-yen">¥</span>
-            <input th:field="*{price}" class="price-input" id="item-price" placeholder="半角数字で入力" type="text">
+            <input th:field="*{price}" type="text" class="price-input" id="item-price" placeholder="例）300">
           </div>
           <div class="price-content">
             <span>販売手数料 (10%)</span>
-            <span><span id="add-tax-price"></span>円</span>
+            <span><span id="add-tax-price">0</span>円</span>
           </div>
           <div class="price-content">
             <span>販売利益</span>
-            <span><span id="profit"></span>円</span>
+            <span><span id="profit">0</span>円</span>
           </div>
         </div>
       </div>
 
       <div class="sell-btn-contents">
         <button type="submit" class="sell-btn">変更する</button>
-        <a href="#" class="back-btn">もどる</a>
+        <a th:href="@{/items/{id}(id=${item.id})}" class="back-btn">もどる</a>
       </div>
     </form>
   </div>

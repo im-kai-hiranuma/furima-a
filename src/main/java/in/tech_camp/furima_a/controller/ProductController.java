@@ -117,58 +117,64 @@ public class ProductController {
     return "redirect:/";
   }
 
-  //商品編集
-    @GetMapping("/items/{id}/edit")
-    public String showEditForm(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+     // 商品編集
+  @GetMapping("/items/edit/{id}")
+  public String showProductEdit(@PathVariable Long id, Model model,
+      @AuthenticationPrincipal CustomUserDetails loginUser) {
+
     ProductDetailDto dto = productService.selectByProductId(id);
 
-    if (currentUser == null) {
-        return "redirect:/users/sign_in";
+    if (dto.isSoldout()) {
+      return "redirect:/";
     }
 
-    if (dto == null || !dto.getUserId().equals(currentUser.getUser().getId())) {
-        return "redirect:/";
-    }
-
-    ProductForm form = new ProductForm();
-    form.setName(dto.getName());
-    form.setDescription(dto.getDescription());
-
-    model.addAttribute("productForm", form);
+    // その商品の情報を取得
     model.addAttribute("item", dto);
+    try {
+      model.addAttribute("productForm", productService.showEditProduct(dto, loginUser.getId()));
+    } catch (Exception e) {
+      return "redirect:/items/" + id;
+    }
+
+    addEnumAttributesToModel(model);
+
     return "items/edit";
+  }
+
+  // 商品編集
+  @PostMapping("/items/edit/{id}")
+  public String updateProduct(@PathVariable Long id, Model model,
+      @AuthenticationPrincipal CustomUserDetails loginUser,
+      @ModelAttribute @Validated ProductForm productForm,
+      BindingResult bindingResult) {
+
+    ProductDetailDto dto = productService.selectByProductId(id);
+
+    if (dto.isSoldout()) {
+      return "redirect:/";
     }
-    
-    @PostMapping("/items/{id}/update")
-    public String updateProduct(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails currentUser,
-            @ModelAttribute("productForm") @Validated ProductForm productForm,
-            BindingResult bindingResult,
-            Model model) {
 
-        if (currentUser == null) {
-            return "redirect:/users/sign_in";
-        }
-
-        if (bindingResult.hasErrors()) {
-            ProductDetailDto dto = productService.selectByProductId(id);
-            model.addAttribute("item", dto);
-            return "items/edit";
-        }
-
-        try {
-            productService.updateProduct(id, productForm, currentUser.getUser().getId());
-        } catch (SecurityException e) {
-            return "redirect:/";
-        } catch (IllegalStateException e) {
-            return "redirect:/";
-        } catch (IOException e) {
-            bindingResult.reject("error.image.upload", "画像の保存に失敗しました。");
-            ProductDetailDto dto = productService.selectByProductId(id);
-            model.addAttribute("item", dto);
-            return "items/edit";
-        }
+    if (bindingResult.hasErrors()) {
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
     }
+
+    try {
+      productService.updateByProductId(id, productForm, loginUser.getId(), dto.getImg());
+    } catch (IOException e) {
+      bindingResult.rejectValue("img", "error.productForm", "画像の保存中にエラーが発生しました");
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
+    } catch (RuntimeException e) {
+      bindingResult.reject("error.productForm", e.getMessage());
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
+    }
+
+    return "redirect:/items/" + id;
+  }
+
 }
-
