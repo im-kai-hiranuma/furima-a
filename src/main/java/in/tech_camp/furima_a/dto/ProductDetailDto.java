@@ -18,5 +18,5 @@ public class ProductDetailDto {
   private String untilDelivery;
   private boolean soldout;
   private Long userId;
-
+  
 }

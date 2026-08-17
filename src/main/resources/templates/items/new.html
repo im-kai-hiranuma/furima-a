@@ -22,7 +22,15 @@
       <!-- エラーメッセージの共通表示エリア -->
       <div th:if="${#fields.hasErrors('*')}" class="error-alert">
         <ul>
-          <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('img')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('category')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('condition')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('deliveryFee')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('prefecture')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('untilDelivery')}" th:text="${err}" class="error-message"></li>
+          <li th:each="err : ${#fields.errors('price')}" th:text="${err}" class="error-message"></li>
         </ul>
       </div>
 
