@@ -21,4 +21,12 @@ public enum DeliveryFeeType {
     }
     return SELECT;
   }
+    public static DeliveryFeeType fromLabel(String displayName) {
+    for (DeliveryFeeType deliveryFeeType : values()) {
+      if (deliveryFeeType.getLabel().equals(displayName)) {
+        return deliveryFeeType;
+      }
+    }
+    return SELECT;
+  }
 }

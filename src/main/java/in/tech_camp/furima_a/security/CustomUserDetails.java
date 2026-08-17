@@ -7,7 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import in.tech_camp.furima_a.entity.UserEntity;
+import lombok.Data;
 
+@Data
 public class CustomUserDetails implements UserDetails {
 
     // データベースから取得したユーザー情報を格納する変数
@@ -37,6 +39,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
+    }
+
+    public Long getId(){
+        return user.getId();
     }
     @Override
     public boolean isAccountNonExpired() { return true; }
