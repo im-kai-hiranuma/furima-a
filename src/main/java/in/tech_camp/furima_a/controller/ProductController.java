@@ -142,7 +142,7 @@ public class ProductController {
   }
 
   // 商品編集
-  @PostMapping("/items/edit/{id}")
+  @PostMapping("/items/{id}/update")
   public String updateProduct(@PathVariable Long id, Model model,
       @AuthenticationPrincipal CustomUserDetails loginUser,
       @ModelAttribute @Validated ProductForm productForm,

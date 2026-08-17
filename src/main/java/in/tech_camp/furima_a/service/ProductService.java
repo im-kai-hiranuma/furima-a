@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.furima_a.dto.ProductDetailDto;
 import in.tech_camp.furima_a.dto.ProductListDto;
@@ -14,6 +15,7 @@ import in.tech_camp.furima_a.entity.ProductEntity;
 import in.tech_camp.furima_a.enums.DeliveryFeeType;
 import in.tech_camp.furima_a.form.ProductForm;
 import in.tech_camp.furima_a.dto.repository.ProductDetailQueryResult;
+import in.tech_camp.furima_a.dto.repository.ProductEditForm;
 import in.tech_camp.furima_a.enums.UntilDelivery;
 import in.tech_camp.furima_a.enums.PrefectureType;
 import in.tech_camp.furima_a.enums.Category;
@@ -134,38 +136,21 @@ public class ProductService {
     return form;
   }
 
-  // 商品更新
+// 商品更新
   @Transactional
   public int updateByProductId(Long id, ProductForm productForm, Long userId, String image) throws IOException {
-
-    // dtoから受け取る -> dbのほうはint型なのでserviceでdtoをint型に変換 もしくは thymeleaf側で変換
 
     if (!productRepository.existsByIdANDUserId(id, userId)) {
       throw new RuntimeException("所有者ではありませんので編集できません");
     }
 
-    String imageName = null;
     MultipartFile imgFile = productForm.getImg();
-
-    if (imgFile != null && !imgFile.isEmpty()) {
-      String uuid = UUID.randomUUID().toString();
-      imageName = uuid + "-" + imgFile.getOriginalFilename();
-
-      Path uploadDir = Paths.get("uploads").toAbsolutePath();
-
-      if (!Files.exists(uploadDir)) {
-        Files.createDirectories(uploadDir);
-      }
-
-      Path imagePath = uploadDir.resolve(imageName);
-      Files.copy(imgFile.getInputStream(), imagePath);
-    }
+    String imageName = (imgFile != null && !imgFile.isEmpty())
+        ? storageService.storeFile(imgFile)
+        : image;
 
     ProductEditForm product = new ProductEditForm();
     product.setId(id);
-    if (imageName == null) {
-      imageName = image;
-    }
     product.setImg(imageName);
     product.setName(productForm.getName());
     product.setDescription(productForm.getDescription());
@@ -185,6 +170,5 @@ public class ProductService {
     }
 
     return result;
-
   }
 }

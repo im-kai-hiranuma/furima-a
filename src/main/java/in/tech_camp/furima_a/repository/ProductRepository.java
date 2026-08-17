@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -33,8 +34,8 @@ public interface ProductRepository {
   void insert(ProductEntity product);
 
   // 出品者どうかを判別
-  @Select("SELECT COUNT(*) > 0 FROM products WHERE id = #{id} AND user_id = #{userId} ")
-  boolean existsByIdANDUserId(Long id,Long userId);
+  @Select("SELECT COUNT(*) > 0 FROM products WHERE id = #{id} AND user_id = #{userId}")
+  boolean existsByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
   // 更新
   @Update("""
