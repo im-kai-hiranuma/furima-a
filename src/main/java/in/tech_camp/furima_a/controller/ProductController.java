@@ -118,7 +118,7 @@ public class ProductController {
   }
 
      // 商品編集
-  @GetMapping("/items/edit/{id}")
+  @GetMapping("/items/{id}/edit")
   public String showProductEdit(@PathVariable Long id, Model model,
       @AuthenticationPrincipal CustomUserDetails loginUser) {
 
