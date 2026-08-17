@@ -1,7 +1,10 @@
 package in.tech_camp.furima_a.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import in.tech_camp.furima_a.dto.ProductDetailDto;
+import in.tech_camp.furima_a.entity.ProductEntity;
 import in.tech_camp.furima_a.enums.Category;
 import in.tech_camp.furima_a.enums.Condition;
 import in.tech_camp.furima_a.enums.DeliveryFeeType;
@@ -99,6 +103,7 @@ public class ProductController {
         model.addAttribute("item", dto);
         return "items/show";
     }
+
   // 商品削除機能
   @PostMapping("/items/{id}/delete")
   public String deleteProduct(
@@ -110,6 +115,66 @@ public class ProductController {
     }
 
     return "redirect:/";
+  }
+
+     // 商品編集
+  @GetMapping("/items/{id}/edit")
+  public String showProductEdit(@PathVariable Long id, Model model,
+      @AuthenticationPrincipal CustomUserDetails loginUser) {
+
+    ProductDetailDto dto = productService.selectByProductId(id);
+
+    if (dto.isSoldout()) {
+      return "redirect:/";
+    }
+
+    // その商品の情報を取得
+    model.addAttribute("item", dto);
+    try {
+      model.addAttribute("productForm", productService.showEditProduct(dto, loginUser.getId()));
+    } catch (Exception e) {
+      return "redirect:/items/" + id;
+    }
+
+    addEnumAttributesToModel(model);
+
+    return "items/edit";
+  }
+
+  // 商品編集
+  @PostMapping("/items/{id}/update")
+  public String updateProduct(@PathVariable Long id, Model model,
+      @AuthenticationPrincipal CustomUserDetails loginUser,
+      @ModelAttribute @Validated ProductForm productForm,
+      BindingResult bindingResult) {
+
+    ProductDetailDto dto = productService.selectByProductId(id);
+
+    if (dto.isSoldout()) {
+      return "redirect:/";
+    }
+
+    if (bindingResult.hasErrors()) {
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
+    }
+
+    try {
+      productService.updateByProductId(id, productForm, loginUser.getId(), dto.getImg());
+    } catch (IOException e) {
+      bindingResult.rejectValue("img", "error.productForm", "画像の保存中にエラーが発生しました");
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
+    } catch (RuntimeException e) {
+      bindingResult.reject("error.productForm", e.getMessage());
+      addEnumAttributesToModel(model);
+      model.addAttribute("item", dto);
+      return "items/edit";
+    }
+
+    return "redirect:/items/" + id;
   }
 
 }
