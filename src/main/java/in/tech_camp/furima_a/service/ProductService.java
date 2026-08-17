@@ -119,7 +119,7 @@ public class ProductService {
   @Transactional(readOnly = true)
   public ProductForm showEditProduct(ProductDetailDto dto, Long userId) {
 
-    if (!productRepository.existsByIdANDUserId(dto.getId(), userId)) {
+    if (!productRepository.existsByIdAndUserId(dto.getId(), userId)) {
       throw new RuntimeException("所有者ではありませんので編集できません");
     }
 
@@ -140,7 +140,7 @@ public class ProductService {
   @Transactional
   public int updateByProductId(Long id, ProductForm productForm, Long userId, String image) throws IOException {
 
-    if (!productRepository.existsByIdANDUserId(id, userId)) {
+    if (!productRepository.existsByIdAndUserId(id, userId)) {
       throw new RuntimeException("所有者ではありませんので編集できません");
     }
 
