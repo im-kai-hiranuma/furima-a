@@ -8,10 +8,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final PortfolioBasicAuthFilter basicAuthFilter;
+
+    // 門番（Filter）を注入
+    public SecurityConfig(PortfolioBasicAuthFilter basicAuthFilter) {
+        this.basicAuthFilter = basicAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -19,10 +27,17 @@ public class SecurityConfig {
             // 開発時：全てのURLへのアクセスを許可
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/items/**", "/users/sign_in", "/users/sign_up").permitAll()
                 .requestMatchers("/items/new", "/items/*/orders").authenticated()
                 .requestMatchers(HttpMethod.POST, "/post").authenticated()
-                .anyRequest().permitAll()
+               // .anyRequest().permitAll()
+            // 本番環境:全てのURLへのアクセスに認証を必須にする
+            .anyRequest().authenticated()
             )
+            // Basic認証を有効にする
+            // .httpBasic(Customizer.withDefaults())
+
+            .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
             .formLogin(login -> login
                 .loginPage("/users/sign_in")            // ログイン画面のURL（GET）
@@ -39,15 +54,26 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")                  // ログアウト成功時の移動先（トップページ）
                 .permitAll()
             )
-            
             // 開発時：POST送信等で403エラーが出ないようCSRFを無効化
             .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
 
+    // @Bean
+    // public UserDetailsService userDetailService(PasswordEncoder encoder) {
+      // String username = System.getenv("BASIC_AUTH_USER");
+      // String password = System.getenv("BASIC_AUTH_PASSWORD");
+
+      // UserDetails user = User.withUsername(username)
+          // .password(encoder.encode(password))
+          // .roles("ADMIN")
+          // .build();
+         // return new InMemoryUserDetailsManager(user);
+    // }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+      return new BCryptPasswordEncoder();
     }
 }
