@@ -20,6 +20,7 @@ import in.tech_camp.furima_a.enums.UntilDelivery;
 import in.tech_camp.furima_a.enums.PrefectureType;
 import in.tech_camp.furima_a.enums.Category;
 import in.tech_camp.furima_a.enums.Condition;
+import in.tech_camp.furima_a.repository.OrderRepository;
 import in.tech_camp.furima_a.repository.ProductRepository;
 
 @Service
@@ -27,10 +28,12 @@ public class ProductService {
 
   private final ProductRepository productRepository;
   private final StorageService storageService;
+  private final OrderRepository orderRepository;
 
-  public ProductService(ProductRepository productRepository, StorageService storageService) {
+  public ProductService(ProductRepository productRepository, StorageService storageService, OrderRepository orderRepository) {
     this.productRepository = productRepository;
     this.storageService = storageService;
+    this.orderRepository= orderRepository;
   }
 
   // 商品一覧表示機能
@@ -128,7 +131,7 @@ public class ProductService {
     form.setDescription(dto.getDescription());
     form.setCategory(Category.fromDisplayName(dto.getCategory()).getCode());
     form.setCondition(Condition.fromDisplayName(dto.getCondition()).getCode());
-    form.setDeliveryFee(DeliveryFeeType.fromDisplayName(dto.getDeliveryFee()).getCode());
+    form.setDeliveryFee(DeliveryFeeType.fromLabel(dto.getDeliveryFee()).getCode());
     form.setPrefecture(PrefectureType.fromDisplayName(dto.getPrefecture()).getCode());
     form.setUntilDelivery(UntilDelivery.fromDisplayName(dto.getUntilDelivery()).getCode());
     form.setPrice(dto.getPrice());

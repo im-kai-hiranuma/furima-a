@@ -1,10 +1,7 @@
 package in.tech_camp.furima_a.controller;
 
 import java.io.IOException;
-import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import in.tech_camp.furima_a.dto.ProductDetailDto;
-import in.tech_camp.furima_a.entity.ProductEntity;
 import in.tech_camp.furima_a.enums.Category;
 import in.tech_camp.furima_a.enums.Condition;
 import in.tech_camp.furima_a.enums.DeliveryFeeType;
@@ -136,7 +132,7 @@ public class ProductController {
       return "redirect:/items/" + id;
     }
 
-    addEnumAttributesToModel(model);
+    addEnumAttributes(model);
 
     return "items/edit";
   }
@@ -155,7 +151,7 @@ public class ProductController {
     }
 
     if (bindingResult.hasErrors()) {
-      addEnumAttributesToModel(model);
+      addEnumAttributes(model);
       model.addAttribute("item", dto);
       return "items/edit";
     }
@@ -164,12 +160,12 @@ public class ProductController {
       productService.updateByProductId(id, productForm, loginUser.getId(), dto.getImg());
     } catch (IOException e) {
       bindingResult.rejectValue("img", "error.productForm", "画像の保存中にエラーが発生しました");
-      addEnumAttributesToModel(model);
+      addEnumAttributes(model);
       model.addAttribute("item", dto);
       return "items/edit";
     } catch (RuntimeException e) {
       bindingResult.reject("error.productForm", e.getMessage());
-      addEnumAttributesToModel(model);
+      addEnumAttributes(model);
       model.addAttribute("item", dto);
       return "items/edit";
     }
